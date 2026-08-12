@@ -1,0 +1,13 @@
+Tanmay Kohale
+
+Python Developer
+
+Skills:
+Python
+FastAPI
+Git
+GitHub
+
+Projects:
+AI Resume Analyzer
+AI Productivity Manager
