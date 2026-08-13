@@ -1,4 +1,7 @@
+from unittest import result
+
 from app.services.analysis_service import analyze_resume
+from app.services.ats_analyzer import calculate_ats_score
 
 
 def test_analyze_resume():
@@ -17,8 +20,15 @@ def test_analyze_resume():
         job_description,
     )
 
-    assert "match_score" in result
-
+    assert "ats_score" in result
+    assert "grade" in result
+    assert "summary" in result
+    assert result["grade"] in [
+        "Excellent Match",
+        "Good Match",
+        "Moderate Match",
+        "Low Match",
+    ]
     assert "Python" in result["matched_skills"]
     assert "FastAPI" in result["matched_skills"]
     assert "Git" in result["matched_skills"]
@@ -32,5 +42,8 @@ def test_analysis_returns_score():
         "Python developer",
         "Python developer",
     )
-
+    assert result["ats_score"] >= 0
+    assert result["ats_score"] <= 100
+    assert "grade" in result
+    assert "summary" in result
     assert result["match_score"] > 0

@@ -1,3 +1,9 @@
+from app.services.score_interpreter import (
+    get_match_grade,
+    get_match_summary,
+)
+
+from app.services.ats_analyzer import calculate_ats_score
 from app.services.matcher import calculate_match_score
 from app.services.skill_analyzer import compare_skills
 
@@ -34,6 +40,13 @@ def analyze_resume(
         resume_text,
         job_description,
     )
+    ats_score = calculate_ats_score(
+        resume_text,
+        job_description,
+    )
+
+    grade = get_match_grade(match_score)
+    summary = get_match_summary(match_score)
 
     skill_analysis = compare_skills(
         resume_text,
@@ -43,6 +56,9 @@ def analyze_resume(
 
     return {
         "match_score": match_score,
+        "ats_score": ats_score,
+        "grade": grade,
+        "summary": summary,
         "matched_skills": skill_analysis["matched_skills"],
         "missing_skills": skill_analysis["missing_skills"],
         "resume_skills": skill_analysis["resume_skills"],
