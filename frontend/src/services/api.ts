@@ -15,3 +15,25 @@ export async function uploadResume(file: File) {
 
     return response.json();
 }
+
+export async function analyzeResume(
+    resumeText: string,
+    jobDescription: string
+) {
+    const response = await fetch(`${API_BASE}/api/analyze`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            resume_text: resumeText,
+            job_description: jobDescription,
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Analysis failed");
+    }
+
+    return response.json();
+}

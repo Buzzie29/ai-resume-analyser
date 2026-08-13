@@ -1,58 +1,55 @@
+from app.services.matcher import calculate_match_score
+from app.services.skill_analyzer import compare_skills
+from app.services.ats_analyzer import calculate_ats_score
 from app.services.score_interpreter import (
     get_match_grade,
     get_match_summary,
 )
 
-from app.services.ats_analyzer import calculate_ats_score
-from app.services.matcher import calculate_match_score
-from app.services.skill_analyzer import compare_skills
-
-DEFAULT_SKILLS = [
+SKILLS = [
     "Python",
     "FastAPI",
-    "Django",
-    "Flask",
-    "Java",
-    "JavaScript",
-    "TypeScript",
-    "React",
-    "Node.js",
-    "SQL",
     "PostgreSQL",
-    "MySQL",
-    "MongoDB",
     "Docker",
-    "Kubernetes",
     "Git",
     "GitHub",
     "AWS",
-    "Azure",
+    "Redis",
+    "Pytest",
+    "Linux",
 ]
 
 
-def analyze_resume(
-    resume_text: str,
-    job_description: str,
-) -> dict:
+def analyze_resume(resume_text: str, job_description: str):
     """Analyze a resume against a job description."""
 
-    match_score = calculate_match_score(
-        resume_text,
-        job_description,
-    )
-    ats_score = calculate_ats_score(
-        resume_text,
-        job_description,
-    )
-
-    grade = get_match_grade(match_score)
-    summary = get_match_summary(match_score)
-
+    # Existing services
+    tfidf_score = calculate_match_score(resume_text, job_description)
     skill_analysis = compare_skills(
         resume_text,
         job_description,
-        DEFAULT_SKILLS,
+        SKILLS,
     )
+    ats_score = calculate_ats_score(resume_text, job_description)
+
+    # ---------- Weighted Scoring ----------
+    required = len(skill_analysis["required_skills"])
+    matched = len(skill_analysis["matched_skills"])
+
+    skill_overlap = (matched / required * 100) if required else 0
+
+    # Small keyword bonus
+    keyword_bonus = 20 if matched >= max(1, required // 2) else 10 if matched > 0 else 0
+
+    match_score = round(
+        tfidf_score * 0.30 + skill_overlap * 0.50 + keyword_bonus,
+        2,
+    )
+
+    match_score = min(match_score, 100)
+
+    grade = get_match_grade(match_score)
+    summary = get_match_summary(match_score)
 
     return {
         "match_score": match_score,

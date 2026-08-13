@@ -2,8 +2,13 @@ import { useState } from "react";
 import { Upload, FileText, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { uploadResume } from "../services/api";
+interface UploadCardProps {
+    onUploadSuccess: (resumeText: string) => void;
+}
 
-export default function UploadCard() {
+export default function UploadCard({
+    onUploadSuccess,
+}: UploadCardProps) {
     const [dragging, setDragging] = useState(false);
     const [fileName, setFileName] = useState("");
     const [uploading, setUploading] = useState(false);
@@ -14,9 +19,12 @@ export default function UploadCard() {
         setSuccess(false);
 
         try {
-            await uploadResume(file);
+            const result = await uploadResume(file);
+
             setFileName(file.name);
             setSuccess(true);
+
+            onUploadSuccess(result.text);
         } catch {
             alert("Upload failed.");
         } finally {
@@ -42,8 +50,8 @@ export default function UploadCard() {
                 }
             }}
             className={`mt-16 w-full max-w-2xl rounded-3xl border p-10 backdrop-blur transition ${dragging
-                    ? "border-cyan-400 bg-cyan-500/10"
-                    : "border-slate-700 bg-slate-900/50"
+                ? "border-cyan-400 bg-cyan-500/10"
+                : "border-slate-700 bg-slate-900/50"
                 }`}
         >
             {success ? (

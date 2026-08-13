@@ -46,4 +46,5 @@ def test_analysis_returns_score():
     assert result["ats_score"] <= 100
     assert "grade" in result
     assert "summary" in result
-    assert result["match_score"] > 0
+    assert result["match_score"] >= 40
+    assert result["match_score"] <= 100
