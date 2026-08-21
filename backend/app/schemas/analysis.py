@@ -15,3 +15,12 @@ class AnalysisResponse(BaseModel):
     missing_skills: list[str]
     resume_skills: list[str]
     required_skills: list[str]
+
+
+class Recommendation(BaseModel):
+    title: str
+    message: str
+    type: str
+
+
+recommendations: list[Recommendation]

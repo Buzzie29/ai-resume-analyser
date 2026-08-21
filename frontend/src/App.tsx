@@ -1,7 +1,7 @@
 import { Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useRef } from "react";
-
+import ThinkingOverlay from "./components/ThinkingOverlay";
 import UploadCard from "./components/UploadCard";
 import JobDescriptionPanel from "./components/JobDescriptionPanel";
 import AnalysisDashboard from "./components/AnalysisDashboard";
@@ -15,11 +15,12 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const dashboardRef = useRef<HTMLDivElement>(null);
-
+  const [thinking, setThinking] = useState(false);
   async function handleAnalyze() {
     if (!resumeText || !jobDescription.trim()) return;
 
     setLoading(true);
+    setThinking(true);
 
     try {
       const result = await analyzeResume(
@@ -27,21 +28,32 @@ export default function App() {
         jobDescription
       );
 
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1800)
+      );
+
       setAnalysis(result);
+
+      setThinking(false);
 
       setTimeout(() => {
         dashboardRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
-      }, 100);
+      }, 200);
     } catch {
       alert("Analysis failed.");
+      setThinking(false);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950 text-white">
+      <ThinkingOverlay open={thinking} />
+
       <div className="mx-auto flex max-w-6xl flex-col items-center px-6 py-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: -30 }}

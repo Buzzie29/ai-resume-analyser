@@ -1,11 +1,14 @@
 import CircularScore from "./CircularScore";
 import { motion } from "framer-motion";
+import SkillChip from "./SkillChip";
 import {
     CheckCircle,
     CircleAlert,
     Gauge,
     Sparkles,
 } from "lucide-react";
+
+import RecommendationCard from "./RecommendationCard";
 
 import type { AnalysisResult } from "../types/analysis";
 
@@ -69,7 +72,24 @@ export default function AnalysisDashboard({ result }: Props) {
                     chip="bg-red-500/20 text-red-300"
                 />
             </div>
+            <div className="mt-8">
+                <h3 className="mb-4 text-2xl font-semibold text-cyan-300">
+                    AI Recommendations
+                </h3>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                    {(result.recommendations ?? []).map((rec, index) => (
+                        <RecommendationCard
+                            key={index}
+                            title={rec.title}
+                            message={rec.message}
+                            type={rec.type}
+                        />
+                    ))}
+                </div>
+            </div>
         </motion.div>
+
     );
 }
 
@@ -105,7 +125,6 @@ function ScoreCard({
         </motion.div>
     );
 }
-
 interface SkillCardProps {
     title: string;
     skills: string[];
@@ -127,18 +146,14 @@ function SkillCard({
             </div>
 
             <div className="flex flex-wrap gap-2">
-                {skills.length ? (
-                    skills.map((skill) => (
-                        <span
-                            key={skill}
-                            className={`rounded-full px-3 py-1 text-sm ${chip}`}
-                        >
-                            {skill}
-                        </span>
-                    ))
-                ) : (
-                    <span className="text-slate-400">None</span>
-                )}
+                {skills.map((skill, index) => (
+                    <SkillChip
+                        key={skill}
+                        skill={skill}
+                        delay={index * 0.12}
+                        color="green"
+                    />
+                ))}
             </div>
         </div>
     );
