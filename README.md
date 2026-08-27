@@ -1,100 +1,132 @@
 # AI Resume Analyzer
 
-![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.141-green?logo=fastapi)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)
-![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+An intelligent full-stack resume analysis platform that compares resumes against job descriptions, identifies matching and missing skills, calculates ATS compatibility, and provides actionable recommendations.
 
-An intelligent **AI-powered Resume Analyzer** that compares resumes against job descriptions, calculates ATS compatibility, identifies matched and missing skills, and provides actionable insights through a modern full-stack web application.
-
-The project is being built with a **FastAPI backend**, **React + TypeScript frontend**, and future **LLM-powered semantic analysis**.
+The application is built with a **FastAPI backend**, **React + TypeScript frontend**, and **MongoDB Atlas** database. It currently provides resume upload, job description analysis, ATS scoring, skill matching, recommendations, persistent analysis history, and restoration of previous reports.
 
 ---
 
 ## Project Status
 
-🚧 **Under Development**
+**MVP — Functional and Under Development**
 
-The project now includes a working backend and frontend with **real resume upload functionality**, automated testing, and a scalable architecture. The next milestone is building the **live analysis dashboard** and integrating AI-powered recommendations.
+The core full-stack application is working end-to-end.
+
+### Current Status
+
+* FastAPI backend: **Working**
+* React frontend: **Working**
+* MongoDB Atlas: **Connected**
+* Resume upload: **Working**
+* Resume parsing: **Working**
+* Job description analysis: **Working**
+* Resume/JD matching: **Working**
+* Skill analysis: **Working**
+* ATS scoring: **Working**
+* Recommendations: **Working**
+* Analysis persistence: **Working**
+* Analysis history: **Working**
+* Previous analysis restoration: **Working**
+* Automated backend tests: **29 passing**
+* Frontend production build: **Passing**
+* AI/LLM integration: **Planned**
+* Production deployment: **Next milestone**
 
 ---
 
-## Table of Contents
+## Features
 
-- [Current Features](#current-features)
-- [Screenshots](#screenshots)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Backend Setup](#backend-setup)
-- [Frontend Setup](#frontend-setup)
-- [API Endpoints](#api-endpoints)
-- [Testing](#testing)
-- [Roadmap](#roadmap)
-- [Upcoming Demo](#upcoming-demo)
-- [Development Philosophy](#development-philosophy)
-- [License](#license)
+### Resume Analysis
 
----
+* Upload PDF, DOCX, or TXT resumes
+* Extract resume text
+* Clean and preprocess resume content
+* Compare resume against a job description
+* Calculate TF-IDF similarity
+* Detect relevant technical skills
+* Identify matched skills
+* Identify missing skills
+* Calculate ATS score
+* Generate match grade
+* Generate analysis summary
+* Generate improvement recommendations
 
-## Current Features
+### Analysis History
 
-### Backend
+Every completed analysis is stored in MongoDB.
 
-- Resume Upload API
-- PDF, DOCX and TXT parsing
-- Resume text preprocessing
-- Job description parsing
-- TF-IDF resume/job similarity scoring
-- Skill extraction
-- Matched skill detection
-- Missing skill detection
-- ATS score calculation
-- Match grading and summary
-- Resume analysis API
-- Swagger documentation
-- 26 automated backend tests
+Users can:
+
+* View previous analyses
+* See match and ATS scores
+* View previous match grades
+* Open previous analysis results
+* Restore the previous resume analysis
+* Restore the associated job description
+
+Each analysis receives a unique MongoDB `analysis_id`.
 
 ### Frontend
 
-- React + TypeScript
-- Vite development environment
-- Tailwind CSS UI
-- Framer Motion animations
-- Glassmorphism design
-- Responsive landing page
-- Drag-and-drop resume upload
-- Live backend integration
-- Upload success feedback
-
-### Planned AI Features
-
-- Semantic skill matching
-- LLM-powered resume analysis
-- AI-generated recommendations
-- Resume rewrite suggestions
-- Resume section analysis
-- Career improvement insights
+* Modern dark interface
+* Responsive design
+* Glassmorphism-inspired UI
+* Animated components
+* Drag-and-drop resume upload
+* Resume upload feedback
+* Job description input
+* Interactive analysis dashboard
+* Match score display
+* ATS score display
+* Skill comparison
+* Recommendations
+* Analysis history
 
 ---
 
-## Screenshots
+## Architecture
 
-> Screenshots will be updated as new milestones are completed.
+```text
+                         AI RESUME ANALYZER
 
-### Frontend Landing Page
-
-Current features include:
-
-- Modern dark gradient interface
-- Glassmorphism upload card
-- Drag-and-drop resume upload
-- Live FastAPI integration
-- Animated UI components
-
-> A full demo GIF will be added after the live analysis dashboard is completed.
+                              USER
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   React Frontend    │
+                    │  TypeScript + Vite  │
+                    └──────────┬──────────┘
+                               │
+                         HTTP / Fetch
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   FastAPI Backend   │
+                    └──────────┬──────────┘
+                               │
+             ┌─────────────────┼─────────────────┐
+             │                 │                 │
+             ▼                 ▼                 ▼
+      Resume Parser      Analysis Service   History API
+             │                 │                 │
+             ▼                 ▼                 ▼
+      Text Processor      Match Engine     Repository Layer
+                               │                 │
+             ┌─────────────────┼─────────────────┘
+             │                 │
+             ▼                 ▼
+       Skill Analyzer      ATS Analyzer
+             │                 │
+             └────────┬────────┘
+                      ▼
+              Recommendation Engine
+                      │
+                      ▼
+                Analysis Result
+                      │
+                      ▼
+                MongoDB Atlas
+```
 
 ---
 
@@ -102,69 +134,44 @@ Current features include:
 
 ### Backend
 
-- Python 3.13
-- FastAPI
-- Uvicorn
-- PyPDF
-- python-docx
-- scikit-learn
-- Pytest
+* Python
+* FastAPI
+* Uvicorn
+* PyPDF
+* python-docx
+* scikit-learn
+* PyMongo
+* Pydantic
+* pytest
 
 ### Frontend
 
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- Framer Motion
-- Lucide React
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* Framer Motion
+* Lucide React
 
-### AI (Planned)
+### Database
 
-- LLM Integration
-- Semantic Embeddings
-- AI Resume Analysis
-- AI Recommendations
+* MongoDB Atlas
+* MongoDB / PyMongo
 
-### Development Tools
+### Development
 
-- Git
-- GitHub
-- Visual Studio Code
-- PowerShell
-- Python Virtual Environment
+* Git
+* GitHub
+* Visual Studio Code
+* PowerShell
 
----
+### AI — Planned
 
-## Architecture
-
-```text
-                  AI Resume Analyzer
-
-              ┌─────────────────────────┐
-              │     React Frontend      │
-              │ Upload • Dashboard • UI │
-              └─────────────┬───────────┘
-                            │
-                       HTTP / Fetch
-                            │
-              ┌─────────────▼────────────┐
-              │      FastAPI Backend     │
-              └─────────────┬────────────┘
-                            │
-        ┌───────────────────┼───────────────────┐
-        │                   │                   │
-        ▼                   ▼                   ▼
-   Resume Parser      Analysis Service     ATS Analyzer
-        │                   │                   │
-        ▼                   ▼                   ▼
- Text Processor      Match Engine      Score Interpreter
-                            │
-                            ▼
-                     JSON Response
-```
-
-The backend follows a **modular service-based architecture**, making each feature independently testable and easy to expand with future AI capabilities.
+* LLM integration
+* Semantic embeddings
+* Semantic resume matching
+* AI-powered resume analysis
+* AI-generated improvement suggestions
 
 ---
 
@@ -174,139 +181,127 @@ The backend follows a **modular service-based architecture**, making each featur
 ai-resume-analyzer/
 │
 ├── backend/
+│   │
 │   ├── app/
-│   │   ├── ai/
 │   │   ├── api/
 │   │   │   └── routes/
-│   │   ├── core/
+│   │   │       ├── analysis.py
+│   │   │       ├── history.py
+│   │   │       └── resume.py
+│   │   │
 │   │   ├── database/
-│   │   ├── models/
+│   │   │   ├── mongodb.py
+│   │   │   └── analysis_repository.py
+│   │   │
 │   │   ├── schemas/
+│   │   │   └── analysis.py
+│   │   │
 │   │   ├── services/
-│   │   ├── utils/
+│   │   │   ├── analysis_service.py
+│   │   │   ├── ats_analyzer.py
+│   │   │   ├── jd_parser.py
+│   │   │   ├── matcher.py
+│   │   │   ├── recommendation_engine.py
+│   │   │   ├── resume_parser.py
+│   │   │   ├── score_interpreter.py
+│   │   │   ├── skill_analyzer.py
+│   │   │   └── text_processor.py
+│   │   │
 │   │   └── main.py
 │   │
 │   ├── tests/
+│   │   ├── test_analysis_api.py
+│   │   ├── test_analysis_service.py
+│   │   ├── test_jd_parser.py
+│   │   ├── test_matcher.py
+│   │   ├── test_resume_parser.py
+│   │   ├── test_score_interpreter.py
+│   │   ├── test_skill_analyzer.py
+│   │   └── test_text_processor.py
+│   │
+│   ├── test_mongodb.py
 │   └── requirements.txt
 │
 ├── frontend/
+│   │
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── AnalysisDashboard.tsx
+│   │   │   ├── AnalysisHistory.tsx
+│   │   │   ├── JobDescriptionPanel.tsx
+│   │   │   ├── ThinkingOverlay.tsx
+│   │   │   └── UploadCard.tsx
+│   │   │
 │   │   ├── services/
+│   │   │   └── api.ts
+│   │   │
 │   │   ├── types/
-│   │   ├── App.tsx
-│   │   ├── main.tsx
-│   │   └── index.css
+│   │   │   └── analysis.ts
+│   │   │
+│   │   └── App.tsx
+│   │
 │   ├── package.json
 │   └── vite.config.ts
 │
-├── docs/
-├── .gitignore
 └── README.md
 ```
 
 ---
 
-## Backend Setup
-
-📍 **Location**
-
-```text
-backend/
-```
-
-### 1. Create a Virtual Environment
-
-```powershell
-python -m venv .venv
-```
-
-### 2. Activate It
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-### 3. Install Dependencies
-
-```powershell
-pip install -r requirements.txt
-```
-
-### 4. Run the Backend
-
-```powershell
-python -m uvicorn app.main:app --reload
-```
-
-Backend URL:
-
-```text
-http://127.0.0.1:8000
-```
-
-Swagger Documentation:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
----
-
-## Frontend Setup
-
-📍 **Location**
-
-```text
-frontend/
-```
-
-### Install Dependencies
-
-```powershell
-npm install
-```
-
-### Start Development Server
-
-```powershell
-npm run dev
-```
-
-Frontend URL:
-
-```text
-http://localhost:5173
-```
-
-The frontend communicates directly with the FastAPI backend using a dedicated API service layer.
-
----
-
 ## API Endpoints
 
-| Method | Endpoint             | Purpose                           |
-| ------ | -------------------- | --------------------------------- |
-| GET    | `/`                  | API status                        |
-| GET    | `/health`            | Health check                      |
-| POST   | `/api/resume/upload` | Upload and parse a resume         |
-| POST   | `/api/analyze`       | Analyze resume vs job description |
+### Health Check
 
-### Example Analysis Response
+```text
+GET /health
+```
+
+Returns the backend health status.
+
+### Resume Upload
+
+```text
+POST /api/resume/upload
+```
+
+Accepts:
+
+* PDF
+* DOCX
+* TXT
+
+Returns extracted resume text.
+
+### Resume Analysis
+
+```text
+POST /api/analyze
+```
+
+Request:
 
 ```json
 {
-  "match_score": 82,
-  "ats_score": 91,
-  "grade": "Excellent Match",
-  "summary": "Your resume aligns strongly with the job description.",
+  "resume_text": "Resume content...",
+  "job_description": "Job description..."
+}
+```
+
+Response contains:
+
+```json
+{
+  "analysis_id": "mongodb-object-id",
+  "match_score": 68.5,
+  "ats_score": 85,
+  "grade": "Good Match",
+  "summary": "Your resume has a strong overlap with the job description.",
   "matched_skills": [
     "Python",
-    "FastAPI",
-    "Git"
+    "FastAPI"
   ],
   "missing_skills": [
-    "Docker"
+    "AWS"
   ],
   "resume_skills": [
     "Python",
@@ -316,150 +311,353 @@ The frontend communicates directly with the FastAPI backend using a dedicated AP
   "required_skills": [
     "Python",
     "FastAPI",
-    "Git",
-    "Docker"
-  ]
+    "AWS"
+  ],
+  "recommendations": []
 }
+```
+
+### Analysis History
+
+```text
+GET /api/history
+```
+
+Returns previously stored analyses from MongoDB.
+
+---
+
+## Scoring System
+
+The current match score combines multiple signals.
+
+### TF-IDF Similarity
+
+Measures textual similarity between the resume and job description.
+
+### Skill Overlap
+
+Compares detected resume skills with the skills required by the job description.
+
+### Keyword Bonus
+
+A small bonus is applied when relevant required skills are detected.
+
+### Current Weighted Formula
+
+```text
+Match Score =
+    TF-IDF Score × 30%
+    +
+    Skill Overlap × 50%
+    +
+    Keyword Bonus
+```
+
+The final score is capped at `100`.
+
+The score is then converted into a match grade and summary.
+
+---
+
+## Database
+
+MongoDB Atlas stores completed analyses.
+
+A stored analysis contains information such as:
+
+```json
+{
+  "_id": "ObjectId",
+  "resume_text": "...",
+  "job_description": "...",
+  "match_score": 68.5,
+  "ats_score": 85,
+  "grade": "Good Match",
+  "summary": "...",
+  "matched_skills": [],
+  "missing_skills": [],
+  "resume_skills": [],
+  "required_skills": [],
+  "recommendations": [],
+  "created_at": "timestamp"
+}
+```
+
+MongoDB is currently used for persistent analysis history.
+
+---
+
+## Backend Setup
+
+Navigate to the backend:
+
+```powershell
+cd backend
+```
+
+Activate the virtual environment:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Create a `.env` file:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+DATABASE_NAME=ai_resume_analyzer
+```
+
+Never commit `.env` or database credentials to GitHub.
+
+### Start Backend
+
+```powershell
+python -m uvicorn app.main:app --reload
+```
+
+Backend:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger documentation:
+
+```text
+http://127.0.0.1:8000/docs
 ```
 
 ---
 
-## Matching Algorithm
+## Frontend Setup
 
-The current matching engine combines multiple techniques:
+Navigate to the frontend:
 
-- TF-IDF Vectorization
-- Cosine Similarity
-- Skill Extraction
-- ATS Compatibility Scoring
-- Match Grade Interpretation
+```powershell
+cd frontend
+```
 
-Current grade thresholds:
+Install dependencies:
 
-| Score  | Grade           |
-| ------ | --------------- |
-| 80–100 | Excellent Match |
-| 60–79  | Good Match      |
-| 40–59  | Moderate Match  |
-| 0–39   | Low Match       |
+```powershell
+npm install
+```
 
-This transparent scoring system provides an explainable baseline before introducing semantic AI models.
+Start the development server:
+
+```powershell
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+### Production Build
+
+```powershell
+npm run build
+```
+
+The production build is generated in:
+
+```text
+frontend/dist/
+```
 
 ---
 
 ## Testing
 
-Run all backend tests:
+Backend tests are written using pytest.
+
+Run:
 
 ```powershell
 cd backend
 python -m pytest
 ```
 
-### Current Test Coverage
+Current status:
 
-- Resume parser
-- Text preprocessing
-- Job description parser
-- Matching engine
-- Skill analyzer
-- ATS analyzer
-- Score interpreter
-- Analysis service
-- Analysis API
+```text
+29 passed
+```
 
-**Current milestone:** **26 passing tests**
+The tests cover:
+
+* Resume parsing
+* Text processing
+* Job description parsing
+* Skill analysis
+* Resume/JD matching
+* ATS scoring
+* Score interpretation
+* Analysis service
+* Analysis API
+
+The MongoDB connection can also be tested with:
+
+```powershell
+python test_mongodb.py
+```
+
+Expected result:
+
+```text
+MongoDB connected successfully!
+```
 
 ---
 
-## Roadmap
+## Development Roadmap
 
 ### Phase 1 — Backend Foundation
 
-- [x] Project setup
-- [x] Git/GitHub setup
-- [x] FastAPI setup
-- [x] Resume parser
-- [x] Resume upload API
-- [x] Text preprocessing
-- [x] Job description parser
-- [x] TF-IDF matching
-- [x] Skill analysis
-- [x] ATS score
-- [x] Match grading
-- [x] Analysis API
-- [x] Automated testing
+* [x] Project setup
+* [x] Git/GitHub setup
+* [x] FastAPI setup
+* [x] Resume parser
+* [x] Resume upload API
+* [x] PDF parsing
+* [x] DOCX parsing
+* [x] TXT parsing
+* [x] Text preprocessing
+* [x] Job description parser
+* [x] TF-IDF matching
+* [x] Skill analysis
+* [x] ATS scoring
+* [x] Match grading
+* [x] Recommendation engine
+* [x] Analysis API
+* [x] Automated testing
 
 ### Phase 2 — Frontend Foundation
 
-- [x] React + TypeScript setup
-- [x] Tailwind CSS
-- [x] Landing page
-- [x] Drag-and-drop upload
-- [x] Backend integration
-- [ ] Live analysis dashboard
-- [ ] Animated score cards
-- [ ] Resume preview
-- [ ] Job description input
-- [ ] Analysis report UI
+* [x] React + TypeScript
+* [x] Vite
+* [x] Tailwind CSS
+* [x] Landing page
+* [x] Responsive UI
+* [x] Glassmorphism design
+* [x] Framer Motion animations
+* [x] Drag-and-drop resume upload
+* [x] Backend integration
+* [x] Job description input
+* [x] Analysis dashboard
+* [x] Score cards
+* [x] Skill visualization
+* [x] Recommendations
 
-### Phase 3 — AI Features
+### Phase 3 — Database
 
-- [ ] Semantic embeddings
-- [ ] LLM integration
-- [ ] AI recommendations
-- [ ] Resume rewrite suggestions
-- [ ] Resume section analysis
-- [ ] Career improvement insights
+* [x] MongoDB Atlas setup
+* [x] MongoDB connection
+* [x] Environment configuration
+* [x] Analysis repository
+* [x] Persistent analysis storage
+* [x] Unique analysis IDs
+* [x] Analysis history API
+* [x] Frontend history
+* [x] Previous analysis restoration
 
-### Phase 4 — Production
+### Phase 4 — Production Readiness
 
-- [ ] Database integration
-- [ ] User authentication
-- [ ] Analysis history
-- [ ] Deployment
-- [ ] Performance optimization
-- [ ] Security improvements
-- [ ] Mobile application
+* [ ] Environment-based frontend API URL
+* [ ] Improved error handling
+* [ ] New analysis/reset flow
+* [ ] History refresh after new analysis
+* [ ] Production backend configuration
+* [ ] Production database configuration
+* [ ] CORS production configuration
+* [ ] Deployment
+
+### Phase 5 — AI Features
+
+* [ ] Semantic embeddings
+* [ ] Semantic resume matching
+* [ ] LLM integration
+* [ ] AI resume insights
+* [ ] AI-generated improvement suggestions
+* [ ] Resume section analysis
+* [ ] AI-powered resume rewriting
+
+### Phase 6 — Advanced Features
+
+* [ ] User authentication
+* [ ] User-specific analysis history
+* [ ] Resume management
+* [ ] Multiple resume support
+* [ ] Saved job descriptions
+* [ ] Analysis analytics
+* [ ] Shareable analysis reports
+* [ ] PDF report generation
+* [ ] Mobile application
 
 ---
 
-## Upcoming Demo
+## Security Notes
 
-The next major milestone will introduce:
-
-- Animated live analysis dashboard
-- ATS score cards
-- Match score visualization
-- Skill comparison chips
-- Resume preview
-- Job description editor
-- AI-powered recommendations
-- Smooth dashboard transitions
-
-A demonstration GIF showcasing the complete workflow—from dragging a resume into the upload area to receiving a fully animated analysis report—will be added after the dashboard milestone.
+* MongoDB credentials must remain in environment variables.
+* `.env` files should never be committed.
+* Production CORS settings should use the deployed frontend domain.
+* API secrets and LLM keys should be stored securely.
+* Authentication should be implemented before exposing private user history in production.
 
 ---
 
-## Development Philosophy
+## Current Milestone
 
-This project is being developed using a **90% coding / 10% theory** approach.
+**Full-Stack MVP + MongoDB Persistence**
 
-Core principles:
+The application can currently:
 
-- Build working features incrementally.
-- Keep services modular.
-- Write automated tests for every major feature.
-- Maintain a clean Git history.
-- Understand every piece of code before moving forward.
-- Add AI only where it provides meaningful value.
+```text
+Upload Resume
+      ↓
+Extract Resume Text
+      ↓
+Enter Job Description
+      ↓
+Analyze Resume
+      ↓
+Calculate Match Score
+      ↓
+Calculate ATS Score
+      ↓
+Analyze Skills
+      ↓
+Generate Recommendations
+      ↓
+Save Analysis to MongoDB
+      ↓
+Return Analysis ID
+      ↓
+View Analysis History
+      ↓
+Restore Previous Analysis
+```
 
-The objective is not only to build a useful product but also to demonstrate full-stack engineering practices, clean architecture, and scalable software development.
+---
+
+## Future Vision
+
+The long-term goal is to turn the project into an intelligent career assistant rather than a simple resume checker.
+
+The planned AI layer will combine resume parsing, job-description understanding, semantic matching, ATS optimization, and LLM-powered recommendations to help users understand exactly how well their resume fits a specific role and how they can improve it.
 
 ---
 
 ## License
 
-This project is currently under active development.
-
-A production-ready open-source license will be added before the first public release.
+This project is currently under development and intended for educational and portfolio purposes.
