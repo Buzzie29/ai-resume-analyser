@@ -1,10 +1,12 @@
 import { Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useRef } from "react";
+
 import ThinkingOverlay from "./components/ThinkingOverlay";
 import UploadCard from "./components/UploadCard";
 import JobDescriptionPanel from "./components/JobDescriptionPanel";
 import AnalysisDashboard from "./components/AnalysisDashboard";
+import AnalysisHistory from "./components/AnalysisHistory";
 
 import { analyzeResume } from "./services/api";
 import type { AnalysisResult } from "./types/analysis";
@@ -12,10 +14,13 @@ import type { AnalysisResult } from "./types/analysis";
 export default function App() {
   const [jobDescription, setJobDescription] = useState("");
   const [resumeText, setResumeText] = useState("");
+  const [fileName, setFileName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
-  const dashboardRef = useRef<HTMLDivElement>(null);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [thinking, setThinking] = useState(false);
+
+  const dashboardRef = useRef<HTMLDivElement>(null);
+
   async function handleAnalyze() {
     if (!resumeText || !jobDescription.trim()) return;
 
@@ -33,7 +38,6 @@ export default function App() {
       );
 
       setAnalysis(result);
-
       setThinking(false);
 
       setTimeout(() => {
@@ -55,6 +59,7 @@ export default function App() {
       <ThinkingOverlay open={thinking} />
 
       <div className="mx-auto flex max-w-6xl flex-col items-center px-6 py-20 text-center">
+
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,7 +77,12 @@ export default function App() {
           </p>
         </motion.div>
 
-        <UploadCard onUploadSuccess={setResumeText} />
+        <UploadCard
+          onUploadSuccess={(text, name) => {
+            setResumeText(text);
+            setFileName(name);
+          }}
+        />
 
         <JobDescriptionPanel
           value={jobDescription}
@@ -88,10 +98,31 @@ export default function App() {
         </button>
 
         {analysis && (
-          <div ref={dashboardRef}>
-            <AnalysisDashboard result={analysis} />
+          <div ref={dashboardRef} className="w-full">
+            <AnalysisDashboard
+              result={analysis}
+              fileName={fileName}
+              resumeText={resumeText}
+            />
           </div>
         )}
+
+        <AnalysisHistory
+          onSelect={(item) => {
+            setAnalysis(item);
+            setResumeText(item.resume_text);
+            setJobDescription(item.job_description);
+            setFileName("Previous Resume");
+
+            setTimeout(() => {
+              dashboardRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }, 200);
+          }}
+        />
+
       </div>
     </div>
   );

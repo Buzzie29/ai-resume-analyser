@@ -1,6 +1,7 @@
 from app.services.matcher import calculate_match_score
 from app.services.skill_analyzer import compare_skills
 from app.services.ats_analyzer import calculate_ats_score
+from app.database.analysis_repository import save_analysis
 from app.services.recommendation_engine import generate_recommendations
 from app.services.score_interpreter import (
     get_match_grade,
@@ -58,7 +59,7 @@ def analyze_resume(resume_text: str, job_description: str):
     grade = get_match_grade(match_score)
     summary = get_match_summary(match_score)
 
-    return {
+    result = {
         "match_score": match_score,
         "ats_score": ats_score,
         "grade": grade,
@@ -69,3 +70,15 @@ def analyze_resume(resume_text: str, job_description: str):
         "required_skills": skill_analysis["required_skills"],
         "recommendations": recommendations,
     }
+
+    analysis_id = save_analysis(
+        {
+            "resume_text": resume_text,
+            "job_description": job_description,
+            **result,
+        }
+    )
+
+    result["analysis_id"] = analysis_id
+
+    return result

@@ -37,3 +37,13 @@ export async function analyzeResume(
 
     return response.json();
 }
+
+export async function getHistory() {
+    const response = await fetch(`${API_BASE}/api/history`);
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch analysis history");
+    }
+
+    return response.json();
+}

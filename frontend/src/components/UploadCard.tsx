@@ -3,7 +3,10 @@ import { Upload, FileText, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { uploadResume } from "../services/api";
 interface UploadCardProps {
-    onUploadSuccess: (resumeText: string) => void;
+    onUploadSuccess: (
+        resumeText: string,
+        fileName: string
+    ) => void;
 }
 
 export default function UploadCard({
@@ -24,7 +27,7 @@ export default function UploadCard({
             setFileName(file.name);
             setSuccess(true);
 
-            onUploadSuccess(result.text);
+            onUploadSuccess(result.text, file.name);
         } catch {
             alert("Upload failed.");
         } finally {

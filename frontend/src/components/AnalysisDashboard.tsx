@@ -1,11 +1,10 @@
 import CircularScore from "./CircularScore";
 import { motion } from "framer-motion";
 import SkillChip from "./SkillChip";
+import ResumeSnapshot from "./ResumeSnapshot";
 import {
     CheckCircle,
     CircleAlert,
-    Gauge,
-    Sparkles,
 } from "lucide-react";
 
 import RecommendationCard from "./RecommendationCard";
@@ -14,9 +13,15 @@ import type { AnalysisResult } from "../types/analysis";
 
 interface Props {
     result: AnalysisResult;
+    fileName: string;
+    resumeText: string;
 }
 
-export default function AnalysisDashboard({ result }: Props) {
+export default function AnalysisDashboard({
+    result,
+    fileName,
+    resumeText,
+}: Props) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -47,14 +52,22 @@ export default function AnalysisDashboard({ result }: Props) {
                 </motion.div>
             </div>
 
-            <div className="mt-6 rounded-3xl border border-slate-700 bg-slate-900/50 p-6 backdrop-blur">
-                <h3 className="text-xl font-semibold text-cyan-300">
-                    {result.grade}
-                </h3>
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+                <div className="rounded-3xl border border-slate-700 bg-slate-900/50 p-6 backdrop-blur">
+                    <h3 className="text-xl font-semibold text-cyan-300">
+                        {result.grade}
+                    </h3>
 
-                <p className="mt-2 text-slate-300">
-                    {result.summary}
-                </p>
+                    <p className="mt-3 text-slate-300">
+                        {result.summary}
+                    </p>
+                </div>
+
+                <ResumeSnapshot
+                    fileName={fileName}
+                    resumeText={resumeText}
+                    skills={result.resume_skills}
+                />
             </div>
 
             <div className="mt-6 grid gap-6 md:grid-cols-2">
@@ -93,38 +106,6 @@ export default function AnalysisDashboard({ result }: Props) {
     );
 }
 
-interface ScoreCardProps {
-    title: string;
-    value: string;
-    icon: React.ReactNode;
-    color: "cyan" | "green";
-}
-
-function ScoreCard({
-    title,
-    value,
-    icon,
-    color,
-}: ScoreCardProps) {
-    const glow =
-        color === "cyan"
-            ? "border-cyan-400/40"
-            : "border-green-400/40";
-
-    return (
-        <motion.div
-            whileHover={{ scale: 1.03 }}
-            className={`rounded-3xl border ${glow} bg-slate-900/50 p-8 backdrop-blur`}
-        >
-            <div className="mb-3 flex items-center gap-3 text-slate-300">
-                {icon}
-                {title}
-            </div>
-
-            <div className="text-5xl font-bold">{value}</div>
-        </motion.div>
-    );
-}
 interface SkillCardProps {
     title: string;
     skills: string[];
@@ -136,7 +117,6 @@ function SkillCard({
     title,
     skills,
     icon,
-    chip,
 }: SkillCardProps) {
     return (
         <div className="rounded-3xl border border-slate-700 bg-slate-900/50 p-6 backdrop-blur">
