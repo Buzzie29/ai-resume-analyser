@@ -2,6 +2,7 @@ from app.services.matcher import calculate_match_score
 from app.services.skill_analyzer import compare_skills
 from app.services.ats_analyzer import calculate_ats_score
 from app.database.analysis_repository import save_analysis
+from app.services.semantic_matcher import calculate_semantic_score
 from app.services.recommendation_engine import generate_recommendations
 from app.services.score_interpreter import (
     get_match_grade,
@@ -27,6 +28,7 @@ def analyze_resume(resume_text: str, job_description: str):
 
     # Existing services
     tfidf_score = calculate_match_score(resume_text, job_description)
+    semantic_score = calculate_semantic_score(resume_text, job_description)
     skill_analysis = compare_skills(
         resume_text,
         job_description,
@@ -50,7 +52,10 @@ def analyze_resume(resume_text: str, job_description: str):
     keyword_bonus = 20 if matched >= max(1, required // 2) else 10 if matched > 0 else 0
 
     match_score = round(
-        tfidf_score * 0.30 + skill_overlap * 0.50 + keyword_bonus,
+        tfidf_score * 0.15
+        + semantic_score * 0.15
+        + skill_overlap * 0.50
+        + keyword_bonus,
         2,
     )
 
@@ -62,6 +67,8 @@ def analyze_resume(resume_text: str, job_description: str):
     result = {
         "match_score": match_score,
         "ats_score": ats_score,
+        "tfidf_score": tfidf_score,
+        "semantic_score": semantic_score,
         "grade": grade,
         "summary": summary,
         "matched_skills": skill_analysis["matched_skills"],

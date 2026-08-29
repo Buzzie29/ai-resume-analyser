@@ -16,6 +16,8 @@ class AnalysisResponse(BaseModel):
     analysis_id: str
     match_score: float
     ats_score: int
+    tfidf_score: float
+    semantic_score: float
     grade: str
     summary: str
     matched_skills: list[str]
