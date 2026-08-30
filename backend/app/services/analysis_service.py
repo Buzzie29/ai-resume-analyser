@@ -3,7 +3,7 @@ from app.services.skill_analyzer import compare_skills
 from app.services.ats_analyzer import calculate_ats_score
 from app.database.analysis_repository import save_analysis
 from app.services.semantic_matcher import calculate_semantic_score
-from app.services.recommendation_engine import generate_recommendations
+from app.services.llm_recommendation_engine import generate_ai_recommendations
 from app.services.score_interpreter import (
     get_match_grade,
     get_match_summary,
@@ -40,10 +40,12 @@ def analyze_resume(resume_text: str, job_description: str):
     required = len(skill_analysis["required_skills"])
     matched = len(skill_analysis["matched_skills"])
 
-    recommendations = generate_recommendations(
-        matched_skills=skill_analysis["matched_skills"],
-        missing_skills=skill_analysis["missing_skills"],
-        ats_score=ats_score,
+    recommendations = generate_ai_recommendations(
+        resume_text,
+        job_description,
+        skill_analysis["matched_skills"],
+        skill_analysis["missing_skills"],
+        ats_score,
     )
 
     skill_overlap = (matched / required * 100) if required else 0
