@@ -1,23 +1,29 @@
-from functools import lru_cache
+import math
+import os
 
-from sentence_transformers import SentenceTransformer, util
+from dotenv import load_dotenv
+from google import genai
+
+load_dotenv()
+
+MODEL = "gemini-embedding-001"
 
 
-@lru_cache(maxsize=1)
-def get_model() -> SentenceTransformer:
-    """Load and cache the sentence embedding model.
+def _cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
+    dot_product = sum(a * b for a, b in zip(vec_a, vec_b))
+    magnitude_a = math.sqrt(sum(a * a for a in vec_a))
+    magnitude_b = math.sqrt(sum(b * b for b in vec_b))
 
-    Cached so the (relatively large) model is only loaded into memory
-    once per process, not on every request.
-    """
-    return SentenceTransformer("all-MiniLM-L6-v2")
+    if magnitude_a == 0 or magnitude_b == 0:
+        return 0.0
+
+    return dot_product / (magnitude_a * magnitude_b)
 
 
 def calculate_semantic_score(resume_text: str, job_description: str) -> float:
-    """Calculate semantic similarity between resume and job description.
-
-    Unlike TF-IDF, this compares meaning rather than exact word overlap,
-    so it can catch matches like "built REST APIs" vs "developed web services".
+    """Calculate semantic similarity between resume and job description
+    using Gemini's embedding API, comparing meaning rather than exact
+    word overlap (unlike TF-IDF).
     """
 
     if not resume_text.strip():
@@ -26,17 +32,27 @@ def calculate_semantic_score(resume_text: str, job_description: str) -> float:
     if not job_description.strip():
         raise ValueError("Job description cannot be empty.")
 
-    model = get_model()
+    api_key = os.getenv("GEMINI_API_KEY")
 
-    embeddings = model.encode(
-        [resume_text, job_description],
-        convert_to_tensor=True,
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY is not set.")
+
+    client = genai.Client(api_key=api_key)
+
+    result = client.models.embed_content(
+        model=MODEL,
+        contents=[resume_text, job_description],
     )
 
-    similarity = util.cos_sim(embeddings[0], embeddings[1]).item()
+    if result.embeddings is None or len(result.embeddings) < 2:
+        raise ValueError("Gemini returned no embeddings.")
 
-    # cos_sim can technically be slightly negative for unrelated text;
-    # clamp to 0 so the score stays in a sane 0-100 range.
-    similarity = max(similarity, 0)
+    resume_embedding = result.embeddings[0].values
+    job_embedding = result.embeddings[1].values
+
+    if resume_embedding is None or job_embedding is None:
+        raise ValueError("Gemini returned no embedding values.")
+
+    similarity = max(_cosine_similarity(resume_embedding, job_embedding), 0)
 
     return round(similarity * 100, 2)

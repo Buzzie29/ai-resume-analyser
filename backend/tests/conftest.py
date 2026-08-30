@@ -25,3 +25,14 @@ def mock_gemini_recommendations():
         return_value=fake_recommendations,
     ):
         yield
+
+
+@pytest.fixture(autouse=True)
+def mock_gemini_semantic_score():
+    """Replace real Gemini embedding calls with a fake score during tests."""
+
+    with patch(
+        "app.services.analysis_service.calculate_semantic_score",
+        return_value=75.0,
+    ):
+        yield
